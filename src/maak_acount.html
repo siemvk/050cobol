@@ -1,0 +1,55 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>050 login test</title>
+    <link rel="stylesheet" href="login.css">
+    <link rel="icon" type="image/x-icon" href="web_Icon.svg">
+    <script>
+        async function makeRequest(url) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                const data = await response.text();
+                return data;
+            } catch (error) {
+                console.error('Error:', error);
+                return null;
+            }
+        }
+        async function login() {
+            var naam = document.getElementById("name").value
+            var ww = document.getElementById("password").value
+            var email = document.getElementById("email").value
+            var data = await makeRequest("https://api.050guessr.nl/maak_acount_V2/" + naam + "/" + ww + "/" + email)
+
+            if (data == "account aangemaakt") {
+                key = await makeRequest("https://api.050guessr.nl/login/" + naam + "/" + ww)
+                console.log(data)
+                await localStorage.setItem("key", key)
+                window.location.replace("index.html");
+            }
+            document.getElementById("rood").innerText = data
+
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container" style="height: 28rem;">
+        <img src="logo.png" alt="050 guessr" class="logo">
+        <input  class="text_box" type="text" id="name" name="name" value=""
+            placeholder="naam"><br>
+        <input  class="text_box" type="pasta" id="email" name="email" value="" placeholder="email"><br>
+
+        <input required placeholder="wachtwoord" class="text_box" type="password" id="password" name="password"
+            value=""><br>
+        <input onclick="login()" type="submit" value="maak acount" class="button"><br>
+        <p class="rood" id="rood"></p>
+    </div>
+</body>
+
+</html>

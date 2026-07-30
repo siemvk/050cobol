@@ -1,0 +1,32 @@
+
+
+
+  <div class="zoom-container" id="zoom-container">
+    <img src="fotos/1/1.png" alt="foto" id="img" class="foto zoom-image">
+  </div>
+  <div class="map_holder" id="map_holder">
+    <div class="guess_knop show_on_hover" id="guess_knop">
+      <a onclick="Klaar(opdrachtnummer, 2)" class="btn customButton large">guess</a>
+    </div>
+    <div class="map show_on_hover" id="map"></div>
+  </div>
+  <div class="info_balk" id="info_balk">
+    <div class="meters">
+      <p class="info_op_balk" id="meters">test</p>
+    </div>
+    <div class="score">
+      <p class="info_op_balk" id="score">test</p>
+    </div>
+    <div class="knop">
+      <weblink class="btn customButton large volgende_knop" href="game_moeilijk.html">volgende</weblink>
+    </div>
+  </div>
+<trigger>
+  if (opdrachtnummer == 6) {
+    goTo("klaar.html");
+  }
+  document.getElementById("info_balk").style.visibility = 'hidden';
+  cords = JSON.parse(RNG(opdrachtnummer, 2));
+  setFixedMarker(cords);
+  maak_kaart();
+</trigger>
