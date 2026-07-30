@@ -1,6 +1,7 @@
-rm -f helloweb.cgi api.cgi
+rm -f helloweb.cgi api.cgi server
 echo "BUILDING"
 cobc -x helloweb.cbl -o helloweb.cgi
-cobc -x api.cbl -o api.cgi
+cobc -x api.cbl -lsqlite3 -o api.cgi
+cobc -x server.cbl -o server
 echo "RUNNING"
-./caddy run --config Caddyfile
+./server

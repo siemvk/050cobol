@@ -1,2 +1,4 @@
 caddy
 **.cgi
+**.db
+server
