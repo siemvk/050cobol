@@ -31,13 +31,13 @@
        01  EXT-4             PIC X(4) VALUE SPACES.
        01  IS-BINARY         PIC X VALUE 'N'.
 
-       01  F-HANDLE          PIC X(4).
-       01  F-OFFSET          PIC 9(18) COMP-5 VALUE 0.
-       01  F-BUF-SIZE        PIC 9(4) COMP-5 VALUE 4096.
-       01  F-FLAGS           PIC X VALUE X"00".
-       01  F-BYTES-READ      PIC 9(4) COMP-5 VALUE 4096.
-       01  F-STATUS          PIC S9(4) COMP-5 VALUE 0.
+       01  FILE-DESC         PIC S9(9) COMP-5 VALUE -1.
+       01  F-BUFFER          PIC X(4096).
+       01  F-BUF-SIZE        PIC S9(9) COMP-5 VALUE 4096.
+       01  F-BYTES-READ      PIC S9(9) COMP-5 VALUE 0.
+       01  F-BYTES-WRITTEN   PIC S9(9) COMP-5 VALUE 0.
        01  STDOUT-FD         PIC S9(9) COMP-5 VALUE 1.
+       01  WS-NULL-PATH      PIC X(257) VALUE SPACES.
 
        PROCEDURE DIVISION.
            ACCEPT USER-AGENT FROM ENVIRONMENT "HTTP_USER_AGENT".
@@ -103,7 +103,24 @@
            END-EVALUATE.
 
            IF IS-BINARY = 'Y' THEN
-               *> TODO Impl diff handeling for
+               MOVE SPACES TO WS-NULL-PATH
+               STRING FUNCTION TRIM(WS-FILENAME) DELIMITED BY SIZE
+                      X"00" DELIMITED BY SIZE
+                      INTO WS-NULL-PATH
+               END-STRING
+               CALL "open" USING WS-NULL-PATH BY VALUE 0 RETURNING FILE-DESC
+               IF FILE-DESC >= 0 THEN
+                   MOVE 1 TO F-BYTES-READ
+                   PERFORM UNTIL F-BYTES-READ <= 0
+                       CALL "read" USING BY VALUE FILE-DESC BY REFERENCE F-BUFFER BY VALUE F-BUF-SIZE RETURNING F-BYTES-READ
+                       IF F-BYTES-READ > 0 THEN
+                           CALL "write" USING BY VALUE STDOUT-FD BY REFERENCE F-BUFFER BY VALUE F-BYTES-READ RETURNING F-BYTES-WRITTEN
+                       END-IF
+                   END-PERFORM
+                   CALL "close" USING BY VALUE FILE-DESC
+               ELSE
+                   DISPLAY "<h1>404 - File Not Found</h1>"
+               END-IF
            ELSE
                OPEN INPUT TEXT-FILE
                IF WS-STATUS = "00" THEN
@@ -122,4 +139,4 @@
                END-IF
            END-IF.
 
-           STOP RUN.
+            STOP RUN.
