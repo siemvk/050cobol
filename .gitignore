@@ -2,3 +2,5 @@ caddy
 **.cgi
 **.db
 server
+
+**.dat**

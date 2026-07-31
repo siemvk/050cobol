@@ -1,0 +1,6 @@
+           SELECT USER-FILE ASSIGN TO "users.dat"
+               ORGANIZATION IS INDEXED
+               ACCESS MODE IS DYNAMIC
+               RECORD KEY IS U-ID
+               ALTERNATE RECORD KEY IS U-KEY WITH DUPLICATES
+               FILE STATUS IS WS-STATUS.

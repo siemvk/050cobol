@@ -11,7 +11,18 @@
     <script>
         async function makeRequest() {
             try {
-                const response = await fetch('https://api.050guessr.nl/leaderboard');
+                function getApiBase() {
+                    const host = window.location.hostname;
+                    const parts = host.split('.');
+                    const len = parts.length;
+                    let root = len > 2 ? parts.slice(len - 2).join('.') : host;
+                    if (root == "localhost") {
+                        root = "localhost:8080"
+                    }
+                    return window.location.protocol + '//' + root + "/api";
+                }
+
+                const response = await fetch(getApiBase() + '/leaderboard');
                 if (!response.ok) {
                     throw new Error('Network response was not ok ' + response.statusText);
                 }
@@ -102,16 +113,16 @@
         <div id="container" class="Acontainer">
             <p>Stad</p>
             <div>
-                <p id="plek_een" class="Ap"><img src="afbeeldingen/Gold Medal.png" class="medalie" alt="">
+                <p id="plek_een" class="Ap"><img src="afbeeldingen/GoldMedal.png" class="medalie" alt="">
                 </p>
             </div>
             <div>
 
-                <p id="plek_twee" class="Ap"> <img src="afbeeldingen/Silver Medal.png" class="medalie" alt="">
+                <p id="plek_twee" class="Ap"> <img src="afbeeldingen/SilverMedal.png" class="medalie" alt="">
                 </p>
             </div>
             <div>
-                <p id="plek_drie" class="Ap"> <img src="afbeeldingen/Bronze Medal.png" class="medalie" alt="">
+                <p id="plek_drie" class="Ap"> <img src="afbeeldingen/BronzeMedal.png" class="medalie" alt="">
                 </p>
             </div>
             <div id="de_rest" class="Ap"></div>
@@ -120,16 +131,16 @@
         <div id="container2" class="Acontainer">
             <p>Province</p>
             <div>
-                <p id="plek_een2" class="Ap"><img src="afbeeldingen/Gold Medal.png" class="medalie" alt="">
+                <p id="plek_een2" class="Ap"><img src="afbeeldingen/GoldMedal.png" class="medalie" alt="">
                 </p>
             </div>
             <div>
 
-                <p id="plek_twee2" class="Ap"> <img src="afbeeldingen/Silver Medal.png" class="medalie" alt="">
+                <p id="plek_twee2" class="Ap"> <img src="afbeeldingen/SilverMedal.png" class="medalie" alt="">
                 </p>
             </div>
             <div>
-                <p id="plek_drie2" class="Ap"> <img src="afbeeldingen/Bronze Medal.png" class="medalie" alt="">
+                <p id="plek_drie2" class="Ap"> <img src="afbeeldingen/BronzeMedal.png" class="medalie" alt="">
                 </p>
             </div>
             <div id="de_rest2" class="Ap"></div>
