@@ -17,7 +17,7 @@ function in_gelogd() {
 async function acount_naam() {
     const options = {method: 'GET'};
 
-    return await makeRequest("https://api.050guessr.nl/get_item/user_key/"+localStorage.getItem("key")+"/1")
+    return await makeRequest("/api/get_item/user_key/"+localStorage.getItem("key")+"/1")
 }
 async function makeRequest(url) {
     try {

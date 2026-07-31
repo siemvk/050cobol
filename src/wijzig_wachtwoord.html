@@ -23,7 +23,7 @@
         async function login() {
             var wwo = document.getElementById("name").value;
             var wwn = document.getElementById("password").value;
-            const data = await makeRequest("https://api.050guessr.nl/set_password/" + wwo + "/" + wwn+"/"+localStorage.getItem("key"));
+            const data = await makeRequest("/api/set_password/" + wwo + "/" + wwn+"/"+localStorage.getItem("key"));
             
         }
     </script>

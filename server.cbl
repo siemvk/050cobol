@@ -101,6 +101,10 @@
                MOVE "api_users" TO ROUTE-PROG
            ELSE IF CLEAN-PATH = "/api/leaderboard" OR CLEAN-PATH = "/api/leaderboard/" THEN
                MOVE "api_leaderboard" TO ROUTE-PROG
+           ELSE IF CLEAN-PATH(1:19) = "/api/maak_acount_V2" THEN
+               MOVE "api_maak_acount_V2" TO ROUTE-PROG
+           ELSE IF CLEAN-PATH(1:10) = "/api/login" THEN
+               MOVE "api_login" TO ROUTE-PROG
            ELSE
                MOVE SPACES TO ROUTE-PROG
            END-IF.

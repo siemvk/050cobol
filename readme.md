@@ -12,19 +12,6 @@ run this:
 ./run.sh
 ```
 
-this runs
-
-```bash
-
-rm -f helloweb.cgi api.cgi server
-echo "BUILDING"
-cobc -x helloweb.cbl -o helloweb.cgi
-cobc -x api.cbl -lsqlite3 -o api.cgi
-cobc -x server.cbl -o server
-echo "RUNNING"
-./server
-```
-
 after this first time you can just run `./server` to start the server.
 
 we dont hot reload so you can just keep using the dev server....

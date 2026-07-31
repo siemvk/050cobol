@@ -2,7 +2,6 @@
       *>================================================================*
       *> FILE-BASED ROUTE: routes/api/users.cbl                         *
       *> PROGRAM-ID: api_users                                          *
-      *> TODO: vervangen
       *>================================================================*
        IDENTIFICATION DIVISION.
        PROGRAM-ID. api_users.
@@ -42,9 +41,9 @@
 
        PROCEDURE DIVISION USING LS-METHOD, LS-URI, LS-PAYLOAD, LS-RESP-BODY.
            IF LS-METHOD = "POST" THEN
-               PERFORM HANDLE-POST
+                PERFORM HANDLE-POST
            ELSE
-               PERFORM HANDLE-GET
+                PERFORM HANDLE-GET
            END-IF.
            GOBACK.
 
@@ -99,7 +98,7 @@
 
        HANDLE-POST.
            INITIALIZE USER-RECORD.
-
+           
            INSPECT LS-PAYLOAD TALLYING POS-START FOR CHARACTERS BEFORE INITIAL '"username": "'
            IF POS-START < 4000 THEN
                COMPUTE POS-START = POS-START + 14

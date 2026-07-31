@@ -90,7 +90,7 @@ function Klaar(daily, moeilijk) {
     sessionStorage.setItem("SCWJHDSG", versleutelTekst(score))
   } else {
     if (!ontsleutelEnVergelijk(sessionStorage.getItem("SCWJHDSG"), score.toString())) {
-      let url = "https://api.050guessr.nl/verban/" + localStorage.getItem("key");
+      let url = "/api/verban/" + localStorage.getItem("key");
       makeRequest(url);
       document.getElementById("score").innerText = "je score is -" + score
       document.getElementById("meters").innerText = "je bent " + meters + "000 meters van het doel af!";
@@ -110,11 +110,11 @@ function Klaar(daily, moeilijk) {
 
   document.getElementById("meters").innerText = "je bent " + meters + " meters van het doel af!";
   if (moeilijk == 1) {
-    url = "https://api.050guessr.nl/set_score/";
+    url = "/api/set_score/";
 
   }
   if (moeilijk == 2) {
-    url = "https://api.050guessr.nl/set_score_moeilijk/";
+    url = "/api/set_score_moeilijk/";
   }
 
   if (daily == "5" && localStorage.getItem("key") !== null) { makeRequest(url + localStorage.getItem("key") + "/" + score + "/" + sessionStorage.getItem("SCWJHDSG")) }

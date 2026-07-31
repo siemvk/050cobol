@@ -2,7 +2,7 @@
 
 async function klaarmakeRequest() {
     try {
-        const response = await fetch('https://api.050guessr.nl/leaderboard');
+        const response = await fetch('/api/leaderboard');
         if (!response.ok) {
             throw new Error('Network response was not ok ' + response.statusText);
         }
@@ -15,7 +15,7 @@ async function klaarmakeRequest() {
 }
 async function get_user_name() {
     try {
-        const response = await fetch('https://api.050guessr.nl/get_item/user_key/' + localStorage.getItem("key") + '/1');
+        const response = await fetch('/api/get_item/user_key/' + localStorage.getItem("key") + '/1');
         if (!response.ok) {
             throw new Error('Network response was not ok ' + response.statusText);
         }
@@ -86,7 +86,7 @@ async function displayLeaderboard() {
 
 async function makeRequest2() {
     try {
-        const response = await fetch('https://api.050guessr.nl/leaderboardMoeilijk');
+        const response = await fetch('/api/leaderboardMoeilijk');
         if (!response.ok) {
             throw new Error('Network response was not ok ' + response.statusText);
         }
