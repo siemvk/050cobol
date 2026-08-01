@@ -37,29 +37,31 @@
         async function displayLeaderboard() {
             const data = await makeRequest();
             if (data) {
-                var leaderboardDiv = document.getElementById('plek_een');
-                var leaderboard = JSON.parse(data)
-                leaderboardDiv.innerHTML += leaderboard[0].username + " " + leaderboard[0].user_score + " punten" + '<img src="bages/' + leaderboard[0].bage + '.png" class="medalie" alt="">';
-                var leaderboardDiv = document.getElementById('plek_twee');
-                leaderboardDiv.innerHTML += leaderboard[1].username + " " + leaderboard[1].user_score + " punten" + '<img src="bages/' + leaderboard[1].bage + '.png" class="medalie" alt="">';
-                var leaderboardDiv = document.getElementById('plek_drie');
-                leaderboardDiv.innerHTML += leaderboard[2].username + " " + leaderboard[2].user_score + " punten" + '<img src="bages/' + leaderboard[2].bage + '.png" class="medalie" alt="">';
-                var leaderboardDiv = document.getElementById('de_rest');
-                leaderboardDiv.innerHTML += leaderboard[3].username + " " + leaderboard[3].user_score + " punten" + '<img src="bages/' + leaderboard[3].bage + '.png" class="medalie" alt="">';
-                console.log("loop")
-                for (let i = 4; i < leaderboard.length; i++) {
-                    if (leaderboard[i].user_score < 1) {
-                        return
+                try {
+                    const leaderboard = JSON.parse(data);
+                    const elements = ['plek_een', 'plek_twee', 'plek_drie'];
+                    for (let i = 0; i < 3; i++) {
+                        const el = document.getElementById(elements[i]);
+                        if (el && leaderboard[i]) {
+                            el.innerHTML += " " + leaderboard[i].username + " " + leaderboard[i].user_score + " punten" + '<img src="bages/' + (leaderboard[i].bage || 0) + '.png" class="medalie" alt="">';
+                        }
                     }
-                    var leaderboardDiv = document.getElementById('de_rest');
-                    leaderboardDiv.innerHTML = leaderboardDiv.innerHTML + "<br>" + leaderboard[i].username + " " + leaderboard[i].user_score + " punten" + '<img src="bages/' + leaderboard[i].bage + '.png" class="medalie" alt="">';
-                    console.log(leaderboard[i].bage)
+
+                    const deRestEl = document.getElementById('de_rest');
+                    if (deRestEl && leaderboard.length > 3) {
+                        for (let i = 3; i < leaderboard.length; i++) {
+                            if (leaderboard[i] && leaderboard[i].user_score > 0) {
+                                deRestEl.innerHTML += (deRestEl.innerHTML ? "<br>" : "") + leaderboard[i].username + " " + leaderboard[i].user_score + " punten" + '<img src="bages/' + (leaderboard[i].bage || 0) + '.png" class="medalie" alt="">';
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.error("Error rendering leaderboard:", e);
                 }
             } else {
                 document.getElementById('container').innerHTML = ' server offline )=';
             }
         }
-        // Call the function to display the leaderboard
         displayLeaderboard();
     </script>
 </head>

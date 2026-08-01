@@ -11,70 +11,101 @@ async function klaarmakeRequest() {
         return null;
     }
 }
+
 async function get_user_name() {
     try {
-        const response = await fetch('/api/get_item/user_key/' + localStorage.getItem("key") + '/1');
+        const key = localStorage.getItem("key");
+        if (!key) return null;
+        const response = await fetch('/api/accName/' + key);
         if (!response.ok) {
             throw new Error('Network response was not ok ' + response.statusText);
         }
         const data = await response.text();
-        return data;
+        return data ? data.trim() : null;
     } catch (error) {
         console.error('Error:', error);
         return null;
     }
 }
+
 function in_gelogd() {
     if (localStorage.getItem("key") !== null) {
-        return true
+        return true;
     }
-    return false
+    return false;
 }
 
 async function get_player_data() {
     const Rusername = await get_user_name();
-    const data = JSON.parse(await klaarmakeRequest());
-    if (!data) {
-        return null
+    if (!Rusername || Rusername === "Verkeerde KEY") {
+        return null;
     }
-    for (let i = 0; i < data.length; i++) {
-        if (data[i].username == Rusername) {
-            var player_data = data[i];
-            var place_in_leaderboard = i + 1;
-            return place_in_leaderboard
+    const rawData = await klaarmakeRequest();
+    if (!rawData) {
+        return null;
+    }
+    try {
+        const data = JSON.parse(rawData);
+        if (!data || !Array.isArray(data)) return null;
+        for (let i = 0; i < data.length; i++) {
+            if (data[i] && data[i].username && data[i].username.trim() === Rusername) {
+                return i + 1;
+            }
         }
+    } catch (e) {
+        console.error("Error parsing leaderboard JSON:", e);
     }
-    return null
+    return null;
 }
 
-
 async function displayLeaderboard() {
+    const gefelliciteerdEl = document.getElementById("gefelliciteerd");
+    const currentScore = (typeof score !== 'undefined') ? score : 0;
+    if (gefelliciteerdEl) {
+        gefelliciteerdEl.innerText = "gefelliciteerd je hebt " + currentScore + " punten";
+    }
+
+    const plekEl = document.getElementById("je_bent_op_plek");
+    if (plekEl) {
+        if (in_gelogd()) {
+            const rank = await get_player_data();
+            if (rank !== null) {
+                plekEl.innerText = "je komt daarmee op plek " + rank + " in de leaderboard";
+            } else {
+                plekEl.innerText = "je bent nog niet opgenomen in de leaderboard";
+            }
+        } else {
+            plekEl.innerText = "login of maak een acount om op de leaderboard te komen!";
+        }
+    }
+
     const data = await klaarmakeRequest();
     if (data) {
-        var leaderboardDiv = document.getElementById('plek_een');
-        var leaderboard = JSON.parse(data)
-        leaderboardDiv.innerHTML += leaderboard[0].username + " " + leaderboard[0].user_score + " punten";
-        var leaderboardDiv = document.getElementById('plek_twee');
-        leaderboardDiv.innerHTML += leaderboard[1].username + " " + leaderboard[1].user_score + " punten";
-        var leaderboardDiv = document.getElementById('plek_drie');
-        leaderboardDiv.innerHTML += leaderboard[2].username + " " + leaderboard[2].user_score + " punten";
-        var leaderboardDiv = document.getElementById('de_rest');
-        leaderboardDiv.innerHTML += leaderboard[3].username + " " + leaderboard[3].user_score + " punten";
-        console.log("loop")
-        for (let i = 4; i < leaderboard.length; i++) {
-            var leaderboardDiv = document.getElementById('de_rest');
-            leaderboardDiv.innerHTML = leaderboardDiv.innerHTML + "<br>" + leaderboard[i].username + " " + leaderboard[i].user_score + " punten";
-            console.log("loop")
-        }
-        document.getElementById("gefelliciteerd").innerText = "gefelliciteerd je hebt " + score + " punten";
-        if (in_gelogd()) {
-            document.getElementById("je_bent_op_plek").innerText = "je bent op plek " + await get_player_data() + " in de leaderboard";
-        } else {
-            document.getElementById("je_bent_op_plek").innerText = "login of maak een acount om op de leaderboard te komen!";
-        }
+        try {
+            const leaderboard = JSON.parse(data);
+            const elements = ['plek_een', 'plek_twee', 'plek_drie'];
+            for (let i = 0; i < 3; i++) {
+                const el = document.getElementById(elements[i]);
+                if (el && leaderboard[i]) {
+                    el.innerHTML += " " + leaderboard[i].username + " " + leaderboard[i].user_score + " punten";
+                }
+            }
 
-
+            const deRestEl = document.getElementById('de_rest');
+            if (deRestEl && leaderboard.length > 3) {
+                for (let i = 3; i < leaderboard.length; i++) {
+                    if (leaderboard[i] && leaderboard[i].user_score > 0) {
+                        deRestEl.innerHTML += (i === 3 ? "" : "<br>") + leaderboard[i].username + " " + leaderboard[i].user_score + " punten";
+                    }
+                }
+            }
+        } catch (e) {
+            console.error("Leaderboard render error:", e);
+        }
     } else {
-        document.getElementById('container').innerHTML = ' server offline )=';
+        const containerEl = document.getElementById('container');
+        if (containerEl) {
+            containerEl.innerHTML = ' server offline )=';
+        }
     }
 }

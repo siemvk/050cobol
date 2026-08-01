@@ -98,23 +98,48 @@
                 IF USERDATAFOUND = "Y" THEN
                     COMPUTE NUM-SCORE = FUNCTION NUMVAL(ARG-SCORE)
                     IF ARG-ROUTE = "set_score_moeilijk" THEN
-                        MOVE NUM-SCORE TO U-SCORE-M
+                        IF NUM-SCORE > U-SCORE-M THEN
+                            MOVE NUM-SCORE TO U-SCORE-M
+                            REWRITE USER-RECORD
+                                INVALID KEY
+                                    STRING "error updating score" DELIMITED BY SIZE
+                                           INTO LS-RESP-BODY
+                                           WITH POINTER OUT-PTR
+                                    END-STRING
+                                NOT INVALID KEY
+                                    STRING "score updated" DELIMITED BY SIZE
+                                           INTO LS-RESP-BODY
+                                           WITH POINTER OUT-PTR
+                                    END-STRING
+                            END-REWRITE
+                        ELSE
+                            STRING "score niet hoger" DELIMITED BY SIZE
+                                   INTO LS-RESP-BODY
+                                   WITH POINTER OUT-PTR
+                            END-STRING
+                        END-IF
                     ELSE
-                        MOVE NUM-SCORE TO U-SCORE
+                        IF NUM-SCORE > U-SCORE THEN
+                            MOVE NUM-SCORE TO U-SCORE
+                            REWRITE USER-RECORD
+                                INVALID KEY
+                                    STRING "error updating score" DELIMITED BY SIZE
+                                           INTO LS-RESP-BODY
+                                           WITH POINTER OUT-PTR
+                                    END-STRING
+                                NOT INVALID KEY
+                                    STRING "score updated" DELIMITED BY SIZE
+                                           INTO LS-RESP-BODY
+                                           WITH POINTER OUT-PTR
+                                    END-STRING
+                            END-REWRITE
+                        ELSE
+                            STRING "score niet hoger" DELIMITED BY SIZE
+                                   INTO LS-RESP-BODY
+                                   WITH POINTER OUT-PTR
+                            END-STRING
+                        END-IF
                     END-IF
-
-                    REWRITE USER-RECORD
-                        INVALID KEY
-                            STRING "error updating score" DELIMITED BY SIZE
-                                   INTO LS-RESP-BODY
-                                   WITH POINTER OUT-PTR
-                            END-STRING
-                        NOT INVALID KEY
-                            STRING "score updated" DELIMITED BY SIZE
-                                   INTO LS-RESP-BODY
-                                   WITH POINTER OUT-PTR
-                            END-STRING
-                    END-REWRITE
                 ELSE
                     STRING "gebruiker bestaat niet" DELIMITED BY SIZE
                            INTO LS-RESP-BODY

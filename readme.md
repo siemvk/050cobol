@@ -18,4 +18,4 @@ we dont hot reload so you can just keep using the dev server....
 
 ## Ai 
 
-I dont really know COBOL sooo Gemini wrote the code for the main web server code and setup the `COBOL Indexed Files`. I made the API and the frontend myself (frontend as of writing 2 years ago).
+I dont really know COBOL sooo Gemini wrote the code for the main web server code and setup the `COBOL Indexed Files`. I made the API and the frontend myself (frontend as of writing 2 years ago). (gemini also did the anticheat decoder as i dont know c)
