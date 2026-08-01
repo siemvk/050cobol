@@ -1,10 +1,10 @@
         >>SOURCE FORMAT IS FREE
        *>================================================================*
-       *> FILE-BASED ROUTE: routes/api/login.cbl                         *
-       *> PROGRAM-ID: api_login                                          *
+       *> FILE-BASED ROUTE: routes/api/accName.cbl                       *
+       *> PROGRAM-ID: api_accName                                        *
        *>================================================================*
         IDENTIFICATION DIVISION.
-        PROGRAM-ID. api_login.
+        PROGRAM-ID. api_accName.
 
         ENVIRONMENT DIVISION.
         INPUT-OUTPUT SECTION.
@@ -24,9 +24,6 @@
         01  ARG-EMPTY            PIC X(50) VALUE SPACES.
         01  ARG-API              PIC X(50) VALUE SPACES.
         01  ARG-ROUTE            PIC X(50) VALUE SPACES.
-        01  RAW-PWD              PIC X(100) VALUE SPACES.
-        01  PWD-LEN              BINARY-LONG VALUE 0.
-        01  HASH-OUT             PIC X(64) VALUE SPACES.
         01  USERDATAFOUND        PIC X VALUE "N".
 
         LINKAGE SECTION.
@@ -51,23 +48,17 @@
                    WITH POINTER OUT-PTR
             END-STRING.
 
-            MOVE SPACES TO ARG-EMPTY ARG-API ARG-ROUTE U-USERNAME RAW-PWD HASH-OUT.
+            MOVE SPACES TO ARG-EMPTY ARG-API ARG-ROUTE U-KEY U-USERNAME.
             UNSTRING LS-URI DELIMITED BY "/"
                 INTO ARG-EMPTY
                      ARG-API
                      ARG-ROUTE
-                     U-USERNAME
-                     RAW-PWD
+                     U-KEY
             END-UNSTRING.
-
-            COMPUTE PWD-LEN = FUNCTION LENGTH(FUNCTION TRIM(RAW-PWD)).
-            IF PWD-LEN > 0 THEN
-                CALL "HashService" USING RAW-PWD PWD-LEN HASH-OUT END-CALL
-            END-IF.
 
             OPEN INPUT USER-FILE.
             IF WS-STATUS = "00" THEN
-                READ USER-FILE KEY IS U-USERNAME
+                READ USER-FILE KEY IS U-KEY
                     INVALID KEY
                         MOVE "N" TO USERDATAFOUND
                     NOT INVALID KEY
@@ -76,28 +67,18 @@
                 CLOSE USER-FILE
 
                 IF USERDATAFOUND = "Y" THEN
-                    IF U-PASSWORD = HASH-OUT OR U-PASSWORD = RAW-PWD THEN
-                        IF U-KEY = SPACES OR U-KEY = LOW-VALUES THEN
-                            MOVE FUNCTION RANDOM TO U-KEY
-                        END-IF
-                        STRING FUNCTION TRIM(U-KEY) DELIMITED BY SIZE
-                               INTO LS-RESP-BODY
-                               WITH POINTER OUT-PTR
-                        END-STRING
-                    ELSE
-                        STRING "verkeerd wachtwoord" DELIMITED BY SIZE
-                               INTO LS-RESP-BODY
-                               WITH POINTER OUT-PTR
-                        END-STRING
-                    END-IF
+                    STRING FUNCTION TRIM(U-USERNAME) DELIMITED BY SIZE
+                           INTO LS-RESP-BODY
+                           WITH POINTER OUT-PTR
+                    END-STRING
                 ELSE
-                    STRING "gebruiker bestaat niet" DELIMITED BY SIZE
+                    STRING "Verkeerde KEY" DELIMITED BY SIZE
                            INTO LS-RESP-BODY
                            WITH POINTER OUT-PTR
                     END-STRING
                 END-IF
             ELSE
-                STRING "gebruiker bestaat niet" DELIMITED BY SIZE
+                STRING "DB read error" DELIMITED BY SIZE
                        INTO LS-RESP-BODY
                        WITH POINTER OUT-PTR
                 END-STRING

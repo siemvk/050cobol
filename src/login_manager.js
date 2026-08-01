@@ -15,9 +15,9 @@ function in_gelogd() {
     return false
 }
 async function acount_naam() {
-    const options = {method: 'GET'};
+    const options = { method: 'GET' };
 
-    return await makeRequest("/api/get_item/user_key/"+localStorage.getItem("key")+"/1")
+    return await makeRequest("/api/accName/" + localStorage.getItem("key"))
 }
 async function makeRequest(url) {
     try {

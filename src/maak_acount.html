@@ -29,7 +29,7 @@
             if (data == "account aangemaakt") {
                 key = await makeRequest("/api/login/" + naam + "/" + ww)
                 console.log(data)
-                await localStorage.setItem("key", key)
+                await localStorage.getItem("key", key)
                 window.location.replace("index.html");
             }
             document.getElementById("rood").innerText = data
@@ -39,7 +39,7 @@
 </head>
 
 <body>
-    <div class="container" style="height: 28rem;">
+    <div class="container" style="height: auto; padding: 1.5rem 1rem;">
         <img src="logo.png" alt="050 guessr" class="logo">
         <input  class="text_box" type="text" id="name" name="name" value=""
             placeholder="naam"><br>
@@ -47,7 +47,10 @@
 
         <input required placeholder="wachtwoord" class="text_box" type="password" id="password" name="password"
             value=""><br>
-        <input onclick="login()" type="submit" value="maak acount" class="button"><br>
+        <p style="color: #c70000; font-size: 0.85rem; margin: 0.8rem 1rem 0 1rem; line-height: 1.2;">
+            ⚠️ <strong>Let op:</strong> Hergebruik geen belangrijk wachtwoord, want deze code is onveilig.
+        </p>
+        <input onclick="login()" type="submit" value="maak acount" class="button" style="width: auto; padding: 0 1.5rem;"><br>
         <p class="rood" id="rood"></p>
     </div>
 </body>

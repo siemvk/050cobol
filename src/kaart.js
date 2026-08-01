@@ -85,16 +85,22 @@ function Klaar(daily, moeilijk) {
   meters = Math.round(Bereken());
   score_wijzging = 2000 - meters;
 
-  if (daily === "1") {
+  if (daily == "1" || !sessionStorage.getItem("SCWJHDSG")) {
     console.log(score)
     sessionStorage.setItem("SCWJHDSG", versleutelTekst(score))
   } else {
     if (!ontsleutelEnVergelijk(sessionStorage.getItem("SCWJHDSG"), score.toString())) {
-      let url = "/api/verban/" + localStorage.getItem("key");
-      makeRequest(url);
-      document.getElementById("score").innerText = "je score is -" + score
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = audioCtx.createOscillator();
+      oscillator.type = 'square';
+      oscillator.frequency.setValueAtTime(1500, audioCtx.currentTime);
+      oscillator.connect(audioCtx.destination);
+      oscillator.start();
+      const scoreEl = document.getElementById("score");
+      if (scoreEl) scoreEl.innerText = "je score is -" + score;
       document.getElementById("meters").innerText = "je bent " + meters + "000 meters van het doel af!";
       console.log(score)
+      setTimeout(() => { window.url = "auhuuhuhuuhuhu" }, 1000)
       return
     }
 
@@ -109,13 +115,13 @@ function Klaar(daily, moeilijk) {
   document.getElementById("score").innerText = "je score is " + score;
 
   document.getElementById("meters").innerText = "je bent " + meters + " meters van het doel af!";
-  if (moeilijk == 1) {
-    url = "/api/set_score/";
+  // if (moeilijk == 1) {
+  url = "/api/set_score/";
 
-  }
-  if (moeilijk == 2) {
-    url = "/api/set_score_moeilijk/";
-  }
+  // }
+  // if (moeilijk == 2) {
+  //   url = "/api/set_score_moeilijk/";
+  // }
 
   if (daily == "5" && localStorage.getItem("key") !== null) { makeRequest(url + localStorage.getItem("key") + "/" + score + "/" + sessionStorage.getItem("SCWJHDSG")) }
 
@@ -123,7 +129,19 @@ function Klaar(daily, moeilijk) {
 
 
 }
-function versleutelTekst(e) { return [...btoa(e)].map((e => String.fromCharCode(e.charCodeAt(0) + 3))).join("") } function ontsleutelEnVergelijk(e, t) { let r = [...e].map((e => String.fromCharCode(e.charCodeAt(0) - 3))).join(""); return atob(r) === t }
+function versleutelTekst(e) {
+  if (e === null || e === undefined) e = "0";
+  return [...btoa(e.toString())].map((c => String.fromCharCode(c.charCodeAt(0) + 3))).join("");
+}
+function ontsleutelEnVergelijk(e, t) {
+  if (!e || typeof e !== "string") return false;
+  try {
+    let r = [...e].map((c => String.fromCharCode(c.charCodeAt(0) - 3))).join("");
+    return atob(r) === String(t);
+  } catch (err) {
+    return false;
+  }
+}
 function MaakLijn() {
   let latlngs = [fixedMarkerLatLng, latlng];
   line = L.polyline(latlngs, {

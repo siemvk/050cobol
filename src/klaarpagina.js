@@ -1,5 +1,3 @@
-
-
 async function klaarmakeRequest() {
     try {
         const response = await fetch('/api/leaderboard');
@@ -51,7 +49,6 @@ async function get_player_data() {
 
 
 async function displayLeaderboard() {
-    displayLeaderboard2();
     const data = await klaarmakeRequest();
     if (data) {
         var leaderboardDiv = document.getElementById('plek_een');
@@ -81,47 +78,3 @@ async function displayLeaderboard() {
         document.getElementById('container').innerHTML = ' server offline )=';
     }
 }
-
-
-
-async function makeRequest2() {
-    try {
-        const response = await fetch('/api/leaderboardMoeilijk');
-        if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
-        }
-        const data = await response.text();
-        return data;
-    } catch (error) {
-        console.error('Error:', error);
-        return null;
-    }
-}
-
-async function displayLeaderboard2() {
-    const data = await makeRequest2();
-    if (data) {
-        var leaderboardDiv = document.getElementById('plek_een2');
-        var leaderboard = JSON.parse(data)
-        leaderboardDiv.innerHTML += leaderboard[0].username + " " + leaderboard[0].user_score_moeilijk + " punten" + '<img src="bages/' + leaderboard[0].bage + '.png" class="medalie" alt="">';
-        var leaderboardDiv = document.getElementById('plek_twee2');
-        leaderboardDiv.innerHTML += leaderboard[1].username + " " + leaderboard[1].user_score_moeilijk + " punten" + '<img src="bages/' + leaderboard[1].bage + '.png" class="medalie" alt="">';
-        var leaderboardDiv = document.getElementById('plek_drie2');
-        leaderboardDiv.innerHTML += leaderboard[2].username + " " + leaderboard[2].user_score_moeilijk + " punten" + '<img src="bages/' + leaderboard[2].bage + '.png" class="medalie" alt="">';
-        var leaderboardDiv = document.getElementById('de_rest2');
-        leaderboardDiv.innerHTML += leaderboard[3].username + " " + leaderboard[3].user_score_moeilijk + " punten" + '<img src="bages/' + leaderboard[3].bage + '.png" class="medalie" alt="">';
-        console.log("loop")
-        for (let i = 4; i < leaderboard.length; i++) {
-            if (leaderboard[i].user_score_moeilijk < 1) {
-                return
-            }
-            var leaderboardDiv = document.getElementById('de_rest2');
-            leaderboardDiv.innerHTML = leaderboardDiv.innerHTML + "<br>" + leaderboard[i].username + " " + leaderboard[i].user_score_moeilijk + " punten" + '<img src="bages/' + leaderboard[i].bage + '.png" class="medalie" alt="">';
-            console.log(leaderboard[i].bage)
-        }
-    } else {
-        document.getElementById('container2').innerHTML = ' server offline )=';
-    }
-}
-
-
